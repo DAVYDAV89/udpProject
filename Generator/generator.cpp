@@ -10,6 +10,7 @@ Generator::Generator()
 
         QString word(QString::number(QRandomGenerator::global() -> bounded(0, m_amplitude)).toLatin1());
         QByteArray buffer;
+
         buffer=word.toUtf8();
 
         m_socket -> writeDatagram(buffer.data(), QHostAddress::LocalHost, 10002 );

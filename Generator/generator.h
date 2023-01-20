@@ -11,7 +11,7 @@ class Generator : public QTcpServer
     QTimer *m_timerSend;
     QUdpSocket *m_socket;
 
-    int m_amplitude{20000000};
+    int m_amplitude{3000};
 public:
     Generator();
     ~Generator();

@@ -1,4 +1,5 @@
 #include "widget.h"
+#include "menu.h"
 #include "ui_widget.h"
 
 Widget::Widget(QWidget *parent)
@@ -7,9 +8,9 @@ Widget::Widget(QWidget *parent)
 {
     ui->setupUi(this);
 
-    quint16 _port = 10002;
+    ui -> mainWidget->hide();
+
     mSocket =  new QUdpSocket(this);
-    mSocket -> bind(QHostAddress::LocalHost, _port);
 
     ui -> color -> addItem(("Синий"));
     ui -> color -> addItem(("Красный"));
@@ -39,39 +40,42 @@ Widget::Widget(QWidget *parent)
 
             QByteArray buffer;
             buffer.resize(mSocket->pendingDatagramSize());
-            QHostAddress sender;
-            quint16 senderPort;
-            mSocket->readDatagram(buffer.data(), buffer.size(), &sender, &senderPort);
 
-            QTextStream T(buffer.data());
-            auto text = T.readAll();
+//            if (buffer.size() == 8192) {
 
-            x.push_back(_x);
-            y.push_back(text.toInt());
+                QHostAddress sender;
+                quint16 senderPort;
+                mSocket->readDatagram(buffer.data(), buffer.size(), &sender, &senderPort);
 
-            m_mediana += text.toInt();
+                QTextStream T(buffer.data());
+                auto text = T.readAll();
 
+                x.push_back(_x);
+                y.push_back(text.toInt());
 
-            _x = _x + (ui -> spinBox -> text().toDouble());
+                m_mediana += text.toInt();
 
-            if ( _x > ui -> customPlot -> xAxis -> range().upper ) {
-                ui -> customPlot -> xAxis -> setRange(0, _x);
-                ui -> xUpDown -> setValue(_x);
-            }
+                _x = _x + (ui -> spinBox -> text().toDouble());
 
-            if ( text.toInt() > ui -> customPlot -> yAxis -> range().upper ) {
-                ui -> maxValue -> setValue(text.toInt());
-                ui -> customPlot -> yAxis -> setRange(0, text.toInt());
-            }
+                if ( _x > ui -> customPlot -> xAxis -> range().upper ) {
+                    ui -> customPlot -> xAxis -> setRange(0, _x);
+                    ui -> xUpDown -> setValue(_x);
+                }
 
-            ui -> customPlot -> graph(0) -> addData(x,y);
-            ui -> customPlot -> replot();
+                if ( text.toInt() > ui -> customPlot -> yAxis -> range().upper ) {
+                    ui -> maxValue -> setValue(text.toInt());
+                    ui -> customPlot -> yAxis -> setRange(0, text.toInt());
+                }
 
-            ui -> mediana -> setValue(m_mediana / y.size());
+                ui -> customPlot -> graph(0) -> addData(x,y);
+                ui -> customPlot -> replot();
 
+                ui -> mediana -> setValue(m_mediana / y.size());
+//            }
 
 //            qDebug() << buffer.data();
         }
+
     });
 }
 
@@ -98,11 +102,6 @@ void Widget::on_color_activated(int _index)
     on_width_valueChanged(ui -> width -> text().toInt());
 }
 
-void Widget::on_xUpDown_valueChanged(int _arg1)
-{
-    ui -> customPlot -> xAxis -> setRange(0, _arg1);
-}
-
 void Widget::on_width_valueChanged(int _arg1)
 {
     QPen _pen = ui -> customPlot -> graph(0) -> pen();
@@ -119,4 +118,17 @@ void Widget::slotRangeChanged(QCPRange _range)
         ui -> customPlot -> xAxis -> setRange(0, ui -> customPlot -> xAxis -> range().upper);
 
     ui -> xUpDown -> setValue(ui -> customPlot -> xAxis -> range().upper);
+}
+
+void Widget::slot_show()
+{
+    quint16 _port = 10002;
+    if (ui -> mainWidget -> isHidden()) {
+        ui -> mainWidget -> show();
+        mSocket -> bind(QHostAddress::LocalHost, _port);
+    }
+    else {
+        ui -> mainWidget -> hide();
+        mSocket -> abort();
+    }
 }

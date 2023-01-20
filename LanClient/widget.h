@@ -21,11 +21,11 @@ private slots:
 
     void on_color_activated(int _index);
 
-    void on_xUpDown_valueChanged(int _arg1);
-
     void on_width_valueChanged(int _arg1);
 
     void slotRangeChanged(QCPRange);
+
+    void slot_show();
 
 private:
     Ui::Widget *ui;
