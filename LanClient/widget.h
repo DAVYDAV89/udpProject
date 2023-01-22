@@ -18,24 +18,15 @@ public:
     ~Widget();
 
 private slots:
-
-    void on_color_activated(int _index);
-
-    void on_width_valueChanged(int _arg1);
-
-    void slotRangeChanged(QCPRange);
-
     void slot_show();
 
 private:
     Ui::Widget *ui;
     QUdpSocket *mSocket;
 
-    int _x{0};
-
     double m_mediana;
 
-    QVector<double> x,y/*, x_max, y_max*/;
+    QVector<double> x,y;
 
 };
 #endif // WIDGET_H
