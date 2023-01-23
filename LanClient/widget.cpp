@@ -35,6 +35,7 @@ Widget::Widget(QWidget *parent)
         }
 
         double _maxValue = 0;
+        int _xValue = 0;
         while (mSocket->hasPendingDatagrams()) {
 
             x.clear();
@@ -53,8 +54,10 @@ Widget::Widget(QWidget *parent)
                 x.push_back(i);
                 y.push_back(_data);
                 m_sumValue += _data;
-                if ( _data > _maxValue )
+                if ( _data > _maxValue ) {
                     _maxValue = _data;
+                    _xValue = i;
+                }
 
 //                _st += (_data + " ");
             }
@@ -76,20 +79,29 @@ Widget::Widget(QWidget *parent)
         x_med[1] = buffer.size();
         y_med[1] = _mediana;
 
+        QPen _pen;
+        _pen.setBrush((QColor(Qt::green)));
+        _pen.setWidth(3);
+
+
         ui -> customPlot -> addGraph();
         ui -> customPlot -> graph(1) -> addData(x_med,y_med);
-        ui -> customPlot -> graph(1) -> setPen(QPen(QColor(Qt::green)));
+        ui -> customPlot -> graph(1) -> setPen(_pen);
         ui -> customPlot -> replot();
 
         QVector<double> x_max(2) , y_max(2);
-        x_max[0] = 0;
+        x_max[0] = _xValue;
         y_max[0] = _maxValue;
-        x_max[1] = buffer.size();
+        x_max[1] = _xValue;
         y_max[1] = _maxValue;
 
         ui -> customPlot -> addGraph();
         ui -> customPlot -> graph(2) -> addData(x_max,y_max);
-        ui -> customPlot -> graph(2) -> setPen(QPen(QColor(Qt::red)));
+
+        _pen.setBrush((QColor(Qt::red)));
+        _pen.setWidth(5);
+
+        ui -> customPlot -> graph(2) -> setPen(_pen);
         ui -> customPlot -> replot();
     });
 
