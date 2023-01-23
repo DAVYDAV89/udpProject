@@ -70,15 +70,26 @@ Widget::Widget(QWidget *parent)
         ui -> customPlot -> graph(0) -> addData(x,y);
         ui -> customPlot -> replot();
 
-        QVector<double> x_(2) , y_(2);
-        x_[0] = 0;
-        y_[0] = m_mediana / y.size();
-        x_[1] = 255;
-        y_[1] = m_mediana / y.size();
+        QVector<double> x_med(2) , y_med(2);
+        x_med[0] = 0;
+        y_med[0] = m_mediana / y.size();
+        x_med[1] = 255;
+        y_med[1] = m_mediana / y.size();
 
         ui -> customPlot -> addGraph();
-        ui -> customPlot -> graph(1) -> addData(x_,y_);
-        ui -> customPlot -> graph(1) -> setPen(QPen(QColor(Qt::red)));
+        ui -> customPlot -> graph(1) -> addData(x_med,y_med);
+        ui -> customPlot -> graph(1) -> setPen(QPen(QColor(Qt::green)));
+        ui -> customPlot -> replot();
+
+        QVector<double> x_max(2) , y_max(2);
+        x_max[0] = 0;
+        y_max[0] = _maxValue;
+        x_max[1] = 255;
+        y_max[1] = _maxValue;
+
+        ui -> customPlot -> addGraph();
+        ui -> customPlot -> graph(2) -> addData(x_max,y_max);
+        ui -> customPlot -> graph(2) -> setPen(QPen(QColor(Qt::red)));
         ui -> customPlot -> replot();
     });
 
