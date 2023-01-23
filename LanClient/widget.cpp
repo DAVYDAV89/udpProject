@@ -12,6 +12,9 @@ Widget::Widget(QWidget *parent)
 
     mSocket =  new QUdpSocket(this);
 
+    QCPCurve *newCurve = new QCPCurve(ui -> customPlot->xAxis, ui -> customPlot->yAxis);
+    newCurve->setData(x, y);
+
     ui -> customPlot -> setInteraction(QCP::iRangeZoom, true);
     ui -> customPlot -> setInteraction(QCP::iRangeDrag, true);
 
@@ -68,8 +71,9 @@ Widget::Widget(QWidget *parent)
 
 //        qDebug() << _mediana;
 
-        ui -> mediana -> setValue(_mediana);
-        ui -> maxValue -> setValue(_maxValue);
+        ui -> mediana -> setText(QString::number(_mediana));
+        ui -> maxValue_x -> setText("X: " + QString::number(_xValue));
+        ui -> maxValue_y -> setText("Y: " + QString::number(_maxValue));
 
         ui -> customPlot -> graph(0) -> addData(x,y);
         ui -> customPlot -> replot();
