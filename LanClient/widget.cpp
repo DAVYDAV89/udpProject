@@ -18,8 +18,8 @@ Widget::Widget(QWidget *parent)
 //    ui -> customPlot->axisRect()->setRangeDrag(Qt::Horizontal);
 //    ui -> customPlot->axisRect()->setRangeZoom(Qt::Horizontal);
 
-    ui -> customPlot -> xAxis -> setRange(0, 260);
-    ui -> customPlot -> yAxis -> setRange(0, 260);
+    ui -> customPlot -> xAxis -> setRange(0, 1500);
+    ui -> customPlot -> yAxis -> setRange(-750, 750);
 
     ui -> customPlot -> addGraph();
 
