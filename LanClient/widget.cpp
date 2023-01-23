@@ -100,9 +100,11 @@ Widget::Widget(QWidget *parent)
         ui -> customPlot -> graph(2) -> addData(x_max,y_max);
 
         _pen.setBrush((QColor(Qt::red)));
-        _pen.setWidth(5);
+        _pen.setWidth(3);
 
         ui -> customPlot -> graph(2) -> setPen(_pen);
+        ui -> customPlot -> graph(2)->setLineStyle(QCPGraph::lsNone);
+        ui -> customPlot -> graph(2)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
         ui -> customPlot -> replot();
     });
 
