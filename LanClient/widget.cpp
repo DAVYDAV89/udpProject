@@ -18,8 +18,8 @@ Widget::Widget(QWidget *parent)
 //    ui -> customPlot->axisRect()->setRangeDrag(Qt::Horizontal);
 //    ui -> customPlot->axisRect()->setRangeZoom(Qt::Horizontal);
 
-    ui -> customPlot -> xAxis -> setRange(-250, 300);
-    ui -> customPlot -> yAxis -> setRange(-250, 300);
+    ui -> customPlot -> xAxis -> setRange(0, 260);
+    ui -> customPlot -> yAxis -> setRange(0, 260);
 
     ui -> customPlot -> addGraph();
 
@@ -70,7 +70,19 @@ Widget::Widget(QWidget *parent)
         ui -> customPlot -> graph(0) -> addData(x,y);
         ui -> customPlot -> replot();
 
+        QVector<double> x_(2) , y_(2);
+        x_[0] = 0;
+        y_[0] = m_mediana / y.size();
+        x_[1] = 255;
+        y_[1] = m_mediana / y.size();
+
+        ui -> customPlot -> addGraph();
+        ui -> customPlot -> graph(1) -> addData(x_,y_);
+        ui -> customPlot -> graph(1) -> setPen(QPen(QColor(Qt::red)));
+        ui -> customPlot -> replot();
     });
+
+
 }
 
 Widget::~Widget()
