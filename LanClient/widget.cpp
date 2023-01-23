@@ -62,10 +62,11 @@ Widget::Widget(QWidget *parent)
 //                _st += (_data + " ");
             }
 //            qDebug() << _st << "\n\n\n\n";
-
         }
 
         double _mediana = m_sumValue / double(y.size());
+
+//        qDebug() << _mediana;
 
         ui -> mediana -> setValue(_mediana);
         ui -> maxValue -> setValue(_maxValue);
