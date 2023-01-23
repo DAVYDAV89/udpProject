@@ -24,6 +24,8 @@ Widget::Widget(QWidget *parent)
     ui -> customPlot -> addGraph();
 
     connect(mSocket, &QUdpSocket::readyRead, [&]() {
+        ui -> customPlot -> clearGraphs();
+        ui -> customPlot -> addGraph();
 
         QByteArray buffer;
         buffer.resize(mSocket->pendingDatagramSize());
@@ -37,26 +39,22 @@ Widget::Widget(QWidget *parent)
 
             x.clear();
             y.clear();
-            m_mediana = 0;
+            m_sumValue = 0;
 
             QHostAddress sender;
             quint16 senderPort;
-            mSocket->readDatagram(buffer.data(), buffer.size(), &sender, &senderPort);
+            mSocket -> readDatagram(buffer.data(), buffer.size(), &sender, &senderPort);
 
             QString _st = "";
             for (int i = 0; i < buffer.size(); ++i) {
 
-                QString _data =  QString::number(uchar(uchar(buffer.at(i))), 10);
+                qint16 _data =  qint16(buffer.at(i));
 
-                if (i % 2 ) {
-                    x.push_back(_data.toDouble());
-                }
-                else {
-                    y.push_back(_data.toDouble());
-                    m_mediana += _data.toDouble();
-                    if ( _data.toDouble() > _maxValue )
-                        _maxValue = _data.toDouble();
-                }
+                x.push_back(i);
+                y.push_back(_data);
+                m_sumValue += _data;
+                if ( _data > _maxValue )
+                    _maxValue = _data;
 
 //                _st += (_data + " ");
             }
@@ -64,7 +62,9 @@ Widget::Widget(QWidget *parent)
 
         }
 
-        ui -> mediana -> setValue(m_mediana / y.size());
+        double _mediana = m_sumValue / double(y.size());
+
+        ui -> mediana -> setValue(_mediana);
         ui -> maxValue -> setValue(_maxValue);
 
         ui -> customPlot -> graph(0) -> addData(x,y);
@@ -72,9 +72,9 @@ Widget::Widget(QWidget *parent)
 
         QVector<double> x_med(2) , y_med(2);
         x_med[0] = 0;
-        y_med[0] = m_mediana / y.size();
-        x_med[1] = 255;
-        y_med[1] = m_mediana / y.size();
+        y_med[0] = _mediana;
+        x_med[1] = buffer.size();
+        y_med[1] = _mediana;
 
         ui -> customPlot -> addGraph();
         ui -> customPlot -> graph(1) -> addData(x_med,y_med);
@@ -84,7 +84,7 @@ Widget::Widget(QWidget *parent)
         QVector<double> x_max(2) , y_max(2);
         x_max[0] = 0;
         y_max[0] = _maxValue;
-        x_max[1] = 255;
+        x_max[1] = buffer.size();
         y_max[1] = _maxValue;
 
         ui -> customPlot -> addGraph();

@@ -24,7 +24,7 @@ private:
     Ui::Widget *ui;
     QUdpSocket *mSocket;
 
-    double m_mediana;
+    double m_sumValue;
 
     QVector<double> x,y;
 
