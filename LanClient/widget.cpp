@@ -16,12 +16,14 @@ Widget::Widget(QWidget *parent)
     ui -> customPlot -> setInteraction(QCP::iRangeDrag, true);
 
     ui -> customPlot -> legend -> setVisible(true);
+    ui -> customPlot -> legend -> setBorderPen(QColor(Qt::red));
+    ui -> customPlot -> legend -> setMinimumSize(170, 90);
 
 //    ui -> customPlot->axisRect()->setRangeDrag(Qt::Horizontal);
 //    ui -> customPlot->axisRect()->setRangeZoom(Qt::Horizontal);
 
-    ui -> customPlot -> xAxis -> setRange(0, 1500);
-    ui -> customPlot -> yAxis -> setRange(-750, 750);
+    ui -> customPlot -> xAxis -> setRange(0, 1000);
+    ui -> customPlot -> yAxis -> setRange(-350, 350);
 
     m_countSample = 0;
     connect(mSocket, &QUdpSocket::readyRead, [&]() {
