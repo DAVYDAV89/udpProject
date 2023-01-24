@@ -13,20 +13,14 @@ class Widget : public QWidget
 {
     Q_OBJECT
 
+    Ui::Widget *ui;
+    QUdpSocket *mSocket;
+
 public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
 private slots:
     void slot_show();
-
-private:
-    Ui::Widget *ui;
-    QUdpSocket *mSocket;
-
-    double m_sumValue;
-
-    QVector<double> x,y;
-
 };
 #endif // WIDGET_H

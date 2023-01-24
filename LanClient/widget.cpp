@@ -12,9 +12,6 @@ Widget::Widget(QWidget *parent)
 
     mSocket =  new QUdpSocket(this);
 
-    QCPCurve *newCurve = new QCPCurve(ui -> customPlot->xAxis, ui -> customPlot->yAxis);
-    newCurve->setData(x, y);
-
     ui -> customPlot -> setInteraction(QCP::iRangeZoom, true);
     ui -> customPlot -> setInteraction(QCP::iRangeDrag, true);
 
@@ -23,8 +20,6 @@ Widget::Widget(QWidget *parent)
 
     ui -> customPlot -> xAxis -> setRange(0, 1500);
     ui -> customPlot -> yAxis -> setRange(-750, 750);
-
-    ui -> customPlot -> addGraph();
 
     connect(mSocket, &QUdpSocket::readyRead, [&]() {
         ui -> customPlot -> clearGraphs();
@@ -39,17 +34,16 @@ Widget::Widget(QWidget *parent)
 
         double _maxValue = 0;
         int _xValue = 0;
-        while (mSocket->hasPendingDatagrams()) {
+        double m_sumValue = 0;
 
-            x.clear();
-            y.clear();
-            m_sumValue = 0;
+        QVector<double> x,y;
+
+        while (mSocket->hasPendingDatagrams()) {
 
             QHostAddress sender;
             quint16 senderPort;
             mSocket -> readDatagram(buffer.data(), buffer.size(), &sender, &senderPort);
 
-            QString _st = "";
             for (int i = 0; i < buffer.size(); ++i) {
 
                 qint16 _data =  qint16(buffer.at(i));
@@ -61,10 +55,7 @@ Widget::Widget(QWidget *parent)
                     _maxValue = _data;
                     _xValue = i;
                 }
-
-//                _st += (_data + " ");
             }
-//            qDebug() << _st << "\n\n\n\n";
         }
 
         double _mediana = m_sumValue / double(y.size());
@@ -75,8 +66,8 @@ Widget::Widget(QWidget *parent)
         ui -> maxValue_x -> setText("X: " + QString::number(_xValue));
         ui -> maxValue_y -> setText("Y: " + QString::number(_maxValue));
 
+        ui -> customPlot -> addGraph();
         ui -> customPlot -> graph(0) -> addData(x,y);
-        ui -> customPlot -> replot();
 
         QVector<double> x_med(2) , y_med(2);
         x_med[0] = 0;
@@ -88,11 +79,9 @@ Widget::Widget(QWidget *parent)
         _pen.setBrush((QColor(Qt::green)));
         _pen.setWidth(3);
 
-
         ui -> customPlot -> addGraph();
         ui -> customPlot -> graph(1) -> addData(x_med,y_med);
         ui -> customPlot -> graph(1) -> setPen(_pen);
-        ui -> customPlot -> replot();
 
         QVector<double> x_max(2) , y_max(2);
         x_max[0] = _xValue;
@@ -100,19 +89,17 @@ Widget::Widget(QWidget *parent)
         x_max[1] = _xValue;
         y_max[1] = _maxValue;
 
-        ui -> customPlot -> addGraph();
-        ui -> customPlot -> graph(2) -> addData(x_max,y_max);
-
         _pen.setBrush((QColor(Qt::red)));
         _pen.setWidth(3);
 
+        ui -> customPlot -> addGraph();
+        ui -> customPlot -> graph(2) -> addData(x_max,y_max);
         ui -> customPlot -> graph(2) -> setPen(_pen);
-        ui -> customPlot -> graph(2)->setLineStyle(QCPGraph::lsNone);
-        ui -> customPlot -> graph(2)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
+        ui -> customPlot -> graph(2) -> setLineStyle(QCPGraph::lsNone);
+        ui -> customPlot -> graph(2) -> setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 4));
+
         ui -> customPlot -> replot();
     });
-
-
 }
 
 Widget::~Widget()

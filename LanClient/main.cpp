@@ -28,10 +28,7 @@ int main(int argc, char *argv[])
                     Qt::CTRL + Qt::Key_Q);
 
     mnuBar.addMenu(pmnu);
-    mnuBar.show();
 
     w.show();
-
-
     return a.exec();
 }
