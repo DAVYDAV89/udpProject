@@ -16,6 +16,8 @@ class Widget : public QWidget
     Ui::Widget *ui;
     QUdpSocket *mSocket;
 
+    int m_countSample;
+
 public:
     Widget(QWidget *parent = nullptr);
     ~Widget();

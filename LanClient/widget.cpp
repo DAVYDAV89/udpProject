@@ -15,15 +15,19 @@ Widget::Widget(QWidget *parent)
     ui -> customPlot -> setInteraction(QCP::iRangeZoom, true);
     ui -> customPlot -> setInteraction(QCP::iRangeDrag, true);
 
+    ui -> customPlot -> legend -> setVisible(true);
+
 //    ui -> customPlot->axisRect()->setRangeDrag(Qt::Horizontal);
 //    ui -> customPlot->axisRect()->setRangeZoom(Qt::Horizontal);
 
     ui -> customPlot -> xAxis -> setRange(0, 1500);
     ui -> customPlot -> yAxis -> setRange(-750, 750);
 
+    m_countSample = 0;
     connect(mSocket, &QUdpSocket::readyRead, [&]() {
+        m_countSample++;
+
         ui -> customPlot -> clearGraphs();
-        ui -> customPlot -> addGraph();
 
         QByteArray buffer;
         buffer.resize(mSocket->pendingDatagramSize());
@@ -62,11 +66,8 @@ Widget::Widget(QWidget *parent)
 
 //        qDebug() << _mediana;
 
-        ui -> mediana -> setText(QString::number(_mediana));
-        ui -> maxValue_x -> setText("X: " + QString::number(_xValue));
-        ui -> maxValue_y -> setText("Y: " + QString::number(_maxValue));
-
         ui -> customPlot -> addGraph();
+        ui -> customPlot -> graph(0) -> setName("sample: " + QString::number(m_countSample));
         ui -> customPlot -> graph(0) -> addData(x,y);
 
         QVector<double> x_med(2) , y_med(2);
@@ -80,6 +81,7 @@ Widget::Widget(QWidget *parent)
         _pen.setWidth(3);
 
         ui -> customPlot -> addGraph();
+        ui -> customPlot -> graph(1) -> setName("Mediana: " + QString::number(_mediana) );
         ui -> customPlot -> graph(1) -> addData(x_med,y_med);
         ui -> customPlot -> graph(1) -> setPen(_pen);
 
@@ -93,6 +95,7 @@ Widget::Widget(QWidget *parent)
         _pen.setWidth(3);
 
         ui -> customPlot -> addGraph();
+        ui -> customPlot -> graph(2) -> setName("MaxValue\nX: " + QString::number(_xValue) + "\nY: " + QString::number(_maxValue) );
         ui -> customPlot -> graph(2) -> addData(x_max,y_max);
         ui -> customPlot -> graph(2) -> setPen(_pen);
         ui -> customPlot -> graph(2) -> setLineStyle(QCPGraph::lsNone);
@@ -100,6 +103,7 @@ Widget::Widget(QWidget *parent)
 
         ui -> customPlot -> replot();
     });
+
 }
 
 Widget::~Widget()
