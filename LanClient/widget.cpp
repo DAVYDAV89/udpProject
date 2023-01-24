@@ -40,7 +40,7 @@ Widget::Widget(QWidget *parent)
 
         double _maxValue = 0;
         int _xValue = 0;
-        double m_sumValue = 0;
+        double _sumValue = 0;
 
         QVector<double> x,y;
 
@@ -56,7 +56,7 @@ Widget::Widget(QWidget *parent)
 
                 x.push_back(i);
                 y.push_back(_data);
-                m_sumValue += _data;
+                _sumValue += _data;
                 if ( _data > _maxValue ) {
                     _maxValue = _data;
                     _xValue = i;
@@ -64,7 +64,7 @@ Widget::Widget(QWidget *parent)
             }
         }
 
-        double _mediana = m_sumValue / double(y.size());
+        double _mediana = _sumValue / double(y.size());
 
 //        qDebug() << _mediana;
 
